@@ -22,7 +22,6 @@ const HomeScreen = ({ route, navigation }: Props) => {
 
  const { data: posts = [], isLoading, isError } = useGetPostsQuery(undefined);
 
-
   const handleDelete = (id: string) => {
     Alert.alert('Confirm Delete', 'Are you sure you want to delete this post?', [
       { text: 'Cancel', style: 'cancel' },
