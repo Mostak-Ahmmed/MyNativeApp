@@ -18,11 +18,7 @@ const AddPostScreen = ({ navigation }: Props) => {
       Alert.alert('Error', 'All fields are required!');
       return;
     }
-
-    console.log("Adding Post:", title, content);
-
-
-    dispatch(addPost({ id: Date.now().toString(), title, content }));
+dispatch(addPost({ id: Date.now().toString(), title, content }));
 
     Alert.alert('Success', 'Post added!');
     navigation.goBack();

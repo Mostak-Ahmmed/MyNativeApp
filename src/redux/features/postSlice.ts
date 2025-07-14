@@ -14,6 +14,8 @@ const initialState: PostState = {
   list: [],
 };
 
+
+
 const postSlice = createSlice({
   name: 'posts',
   initialState,
@@ -24,8 +26,17 @@ const postSlice = createSlice({
     deletePost: (state, action: PayloadAction<string>) => {
       state.list = state.list.filter(post => post.id !== action.payload);
     },
+
+    editPost: (state, action: PayloadAction<Post>) => {
+    const index = state.list.findIndex(post => post.id === action.payload.id);
+    if (index !== -1) {
+        state.list[index] = action.payload;
+    }
+    }
+
+
   },
 });
 
-export const { addPost, deletePost } = postSlice.actions;
+export const { addPost, deletePost, editPost } = postSlice.actions;
 export default postSlice.reducer;

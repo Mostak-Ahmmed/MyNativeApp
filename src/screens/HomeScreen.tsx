@@ -6,42 +6,81 @@ import {
   Button,
   FlatList,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../redux/store';
+import { useDispatch } from 'react-redux';
 import { deletePost } from '../redux/features/postSlice';
+import { useGetPostsQuery } from '../redux/services/postApi';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 const HomeScreen = ({ route, navigation }: Props) => {
   const { username } = route.params;
-  const posts = useSelector((state: RootState) => state.posts.list);
   const dispatch = useDispatch();
 
+ const { data: posts = [], isLoading, isError } = useGetPostsQuery(undefined);
+
+
   const handleDelete = (id: string) => {
-    dispatch(deletePost(id));
+    Alert.alert('Confirm Delete', 'Are you sure you want to delete this post?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        onPress: () => dispatch(deletePost(id)), // Local delete
+        style: 'destructive',
+      },
+    ]);
   };
+
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading posts...</Text>
+      </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <View style={styles.container}>
+        <Text>Error fetching posts!</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome, {username}!</Text>
       <Button title="Add Post" onPress={() => navigation.navigate('AddPost')} />
 
-      <Text style={styles.subtitle}>Your Posts:</Text>
+      <Text style={styles.subtitle}>Posts from API:</Text>
       <FlatList
         data={posts}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.postCard}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <Text style={styles.postTitle}>{item.title}</Text>
-              <TouchableOpacity onPress={() => handleDelete(item.id)}>
-                <Text style={styles.deleteText}>🗑️</Text>
-              </TouchableOpacity>
+
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity onPress={() => handleDelete(item.id)}>
+                  <Text style={styles.deleteText}>🗑️</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('EditPost', {
+                      id: item.id,
+                      title: item.title,
+                      content: item.body || item.content,
+                    })
+                  }>
+                  <Text style={styles.editText}>✏️</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <Text>{item.content}</Text>
+            <Text>{item.body || item.content}</Text>
           </View>
         )}
       />
@@ -67,6 +106,11 @@ const styles = StyleSheet.create({
   },
   deleteText: {
     color: 'red',
+    fontSize: 18,
+    paddingHorizontal: 8,
+  },
+  editText: {
+    color: 'green',
     fontSize: 18,
     paddingHorizontal: 8,
   },
