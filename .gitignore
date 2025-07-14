@@ -76,18 +76,3 @@ yarn-error.log
 
 
 
-# React Native
-node_modules/
-android/.gradle/
-android/app/build/
-ios/Pods/
-*.keystore
-*.iml
-*.log
-.env
-
-# VS Code
-.vscode/
-
-# Mac
-.DS_Store

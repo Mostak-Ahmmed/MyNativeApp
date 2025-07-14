@@ -7,8 +7,6 @@ import HomeScreen from '../screens/HomeScreen';
 import AddPostScreen from '../screens/AddPostScreen';
 import EditPostScreen from '../screens/EditPostScreen';
 
-
-
 export type RootStackParamList = {
   Auth: undefined;
   Home: { username: string };
