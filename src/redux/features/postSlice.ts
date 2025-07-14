@@ -21,8 +21,11 @@ const postSlice = createSlice({
     addPost: (state, action: PayloadAction<Post>) => {
       state.list.push(action.payload);
     },
+    deletePost: (state, action: PayloadAction<string>) => {
+      state.list = state.list.filter(post => post.id !== action.payload);
+    },
   },
 });
 
-export const { addPost } = postSlice.actions;
+export const { addPost, deletePost } = postSlice.actions;
 export default postSlice.reducer;
