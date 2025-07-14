@@ -1,57 +1,51 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  Alert,
-} from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { addPost } from '../redux/features/postSlice';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
+import { v4 as uuidv4 } from 'uuid';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AddPost'>;
 
 const AddPostScreen = ({ navigation }: Props) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const dispatch = useDispatch();
 
-  const handlePostSubmit = () => {
+  const handleSubmit = () => {
     if (!title || !content) {
-      Alert.alert('Error', 'Please fill in both fields!');
+      Alert.alert('Error', 'All fields are required!');
       return;
     }
 
-    Alert.alert('Post Added', `Title: ${title}\nContent: ${content}`);
-    // Clear inputs
-    setTitle('');
-    setContent('');
+    console.log("Adding Post:", title, content);
 
-    // Optionally go back to home
+
+    dispatch(addPost({ id: Date.now().toString(), title, content }));
+
+    Alert.alert('Success', 'Post added!');
     navigation.goBack();
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Add New Post</Text>
-
       <TextInput
+        placeholder="Title"
         style={styles.input}
-        placeholder="Post Title"
         value={title}
         onChangeText={setTitle}
       />
-
       <TextInput
+        placeholder="Content"
         style={[styles.input, styles.textArea]}
-        placeholder="Post Content"
-        multiline
-        numberOfLines={5}
         value={content}
         onChangeText={setContent}
+        multiline
+        numberOfLines={5}
       />
-
-      <Button title="Submit Post" onPress={handlePostSubmit} />
+      <Button title="Submit" onPress={handleSubmit} />
     </View>
   );
 };
@@ -59,14 +53,13 @@ const AddPostScreen = ({ navigation }: Props) => {
 export default AddPostScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#f8f8f8' },
+  container: { flex: 1, padding: 20 },
   title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
   input: {
     borderWidth: 1,
-    borderColor: '#aaa',
-    borderRadius: 8,
     padding: 10,
     marginBottom: 15,
+    borderRadius: 8,
     backgroundColor: '#fff',
   },
   textArea: {
