@@ -50,7 +50,7 @@ const AuthForm = ({
 
       <TouchableOpacity onPress={toggleMode}>
         <Text style={styles.switchText}>
-          {isSignup ? 'Already have an account? Login' : "Don't have an account? Sign Up"}
+          {isSignup ? 'Already have an  account? Login' : "Don't have an account? Sign Up"}
         </Text>
       </TouchableOpacity>
     </View>
